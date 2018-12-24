@@ -21,7 +21,7 @@ https://petition.parliament.uk/petitions?state=open
 This list will likely grow:
 
 * [ ] Document commands.
-* [ ] Set schedule in data.
+* [x] Set schedule in data.
 * [ ] Support enable/disable flag.
 * [ ] Disable a schedule when a peition closes.
 * [ ] Front-end reporting and data export.
