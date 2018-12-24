@@ -8,7 +8,16 @@ use App\Constituency;
 
 class Petition extends Model
 {
-    //
+    /**
+     * Schedule frequency.
+     */
+    const SCHEDULE_NONE = 'none';
+    const SCHEDULE_DAY = 'day';
+    const SCHEDULE_HOUR = 'hour';
+    const SCHEDULE_HALF_HOUR = 'half-hour';
+    const SCHEDULE_QUARTER_HOUR = 'quarter-hour';
+    const SCHEDULE_TEN_MINUTES = 'ten-minutes';
+
     protected $guarded = [];
 
     protected $casts = [
@@ -16,7 +25,7 @@ class Petition extends Model
     ];
 
     protected $attributes = [
-        'metadata' => [],
+        'metadata' => '{}',
     ];
 
     public function countries()

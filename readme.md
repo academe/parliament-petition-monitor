@@ -27,4 +27,6 @@ This list will likely grow:
 * [ ] Front-end reporting and data export.
 * [ ] Installation instructions.
 * [ ] Automatically update peitition metadata on any substantive change (e.g. milestones).
+* [ ] With lots of jobs scheduled, it may be worth running them from a queue
+      so jobs could be run in parallel.
 

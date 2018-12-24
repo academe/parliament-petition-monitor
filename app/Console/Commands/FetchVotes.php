@@ -11,6 +11,7 @@ use App\Petition;
 use App\FetchJob;
 use App\PetitionData;
 use Carbon\Carbon;
+use Log;
 
 class FetchVotes extends Command
 {
@@ -62,7 +63,6 @@ class FetchVotes extends Command
         $petitionData = new PetitionData($petitionNumber);
 
         if ($dryRun) {
-            //dd($petitionData->getCount());
             $this->info(json_encode(
                 $petitionData->getDataItem(),
                 JSON_PRETTY_PRINT
@@ -75,6 +75,7 @@ class FetchVotes extends Command
         );
 
         $fetchJob = FetchJob::where('count_time', '=', $updatedAt)
+            ->where('petition_id', '=', $petition->id)
             ->first();
 
         // Should be new; if not, then skip.

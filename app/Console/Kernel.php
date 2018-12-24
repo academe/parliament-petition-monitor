@@ -30,19 +30,23 @@ class Kernel extends ConsoleKernel
         // /opt/plesk/php/7.2/bin/php
         // /var/www/vhosts/acadweb.co.uk/httpdocs/petitions/artisan
 
-        // TODO: read the surveys and frequecies for each from the database.
+        // Read the surveys and frequecies for each from the database.
+        // For each schedule frequency, see what needs to be run.
 
-        // Leave the EU without a deal in March 2019.
-        $schedule->command('petition:fetch-votes 229963')
-            //->everyMinute()
-            ->everyTenMinutes()
-            ;
+        $schedule->command('petition:fetch-schedule day')
+            ->daily();
 
-        // STOP BREXIT
-        $schedule->command('petition:fetch-votes 226509')
-            //->everyMinute()
-            ->everyTenMinutes()
-            ;
+        $schedule->command('petition:fetch-schedule hour')
+            ->hourly();
+
+        $schedule->command('petition:fetch-schedule half-hour')
+            ->everyThirtyMinutes();
+
+        $schedule->command('petition:fetch-schedule quarter-hour')
+            ->everyFifteenMinutes();
+
+        $schedule->command('petition:fetch-schedule ten-minutes')
+            ->everyTenMinutes();
     }
 
     /**

@@ -7,7 +7,6 @@ use App\Petition;
 
 class FetchJob extends Model
 {
-    //
     protected $guarded = [];
 
     public function petition()

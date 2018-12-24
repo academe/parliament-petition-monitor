@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Petition;
 
 class CreatePetitionsTable extends Migration
 {
@@ -19,6 +20,8 @@ class CreatePetitionsTable extends Migration
 
             $table->integer('petition_number');
             $table->text('metadata');
+
+            $table->string('schedule', 30)->default(Petition::SCHEDULE_NONE);
         });
     }
 

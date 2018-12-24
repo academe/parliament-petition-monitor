@@ -18,7 +18,8 @@ class CreatePetition extends Command
     protected $signature = 'petition:create-petition
         {petitionNumber : the integer petition number}
         {--dry-run : show data fetched without updating the database}
-        {--update : update the petition with current metadata}';
+        {--update : update the petition with current metadata}
+        {--schedule=none : the schedule frequency (none|hour|day|ten-minutes|quarter-hour|half-hour)}';
 
     /**
      * The console command description.
@@ -47,6 +48,21 @@ class CreatePetition extends Command
         $petitionNumber = (int)$this->argument('petitionNumber');
         $dryRun = $this->option('dry-run');
         $update = $this->option('update');
+        $schedule = $this->option('schedule');
+
+        $scheduleConstant = sprintf(
+            '%s::SCHEDULE_%s',
+            Petition::class,
+            str_replace('-', '_', strtoupper($schedule))
+        );
+
+        if (! defined($scheduleConstant)) {
+            $this->error(sprintf(
+                'Schedule type "%s" not valid',
+                $schedule
+            ));
+            return false;
+        }
 
         $petition = Petition::where('petition_number', '=', $petitionNumber)->first();
 
@@ -55,6 +71,7 @@ class CreatePetition extends Command
 
             $petition = new Petition([
                 'petition_number' => $petitionNumber,
+                'schedule' => $schedule,
             ]);
         } else {
             // Petition exists.
@@ -68,6 +85,11 @@ class CreatePetition extends Command
             }
         }
 
+        if ($schedule !== $petition->schedule) {
+            $petition->schedule = $schedule;
+            $this->info(sprintf('Schedule updated to %s', $schedule));
+        }
+
         $petitionData = new PetitionData($petitionNumber);
 
         // TODO: error if not a valid fetch - do a check.
@@ -77,7 +99,7 @@ class CreatePetition extends Command
         if ($dryRun) {
             $this->info('Dry-run; nothing updated.');
         } else {
-            dump($petition->getPetitionData()->getAction());
+            $this->info(sprintf('Action: "%s"', $petition->getPetitionData()->getAction()));
             $petition->save();
             $this->info(sprintf('Petition %d updated', $petitionNumber));
         }
