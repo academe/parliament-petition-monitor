@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Petition;
+use Carbon\Carbon;
 
 class FetchJob extends Model
 {

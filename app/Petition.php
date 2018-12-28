@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Country;
 use App\Constituency;
+use Carbon\Carbon;
+use DB;
 
 class Petition extends Model
 {
@@ -28,14 +30,9 @@ class Petition extends Model
         'metadata' => '{}',
     ];
 
-    public function countries()
+    public function fetchJobs()
     {
-        return $this->belongsToMany(Country::class);
-    }
-
-    public function constituencies()
-    {
-        return $this->belongsToMany(Constituency::class);
+        return $this->hasMany(FetchJob::class);
     }
 
     /**
@@ -47,5 +44,105 @@ class Petition extends Model
             $this->petition_number,
             $this->metadata
         );
+    }
+
+    /**
+     * Get the min and max date range of fetch jobs with an
+     * overall count.
+     */
+    public function getJobFetchMinTime()
+    {
+        $minTime = $this->fetchJobs()
+            ->whereNotNull('count')
+            ->min('count_time');
+
+        return $minTime ? Carbon::parse($minTime) : null;
+    }
+
+    /**
+     * Get the min and max date range of fetch jobs with an
+     * overall count.
+     */
+    public function getJobFetchMaxTime()
+    {
+        $maxTime = $this->fetchJobs()
+            ->whereNotNull('count')
+            ->max('count_time');
+
+        return $maxTime ? Carbon::parse($maxTime) : null;
+    }
+
+    /**
+     * Get the count of fetch jobs between an optional date range.
+     */
+    public function getJobFetchCount(Carbon $fromTime = null, Carbon $toTime = null)
+    {
+        $query = $this->fetchJobs()
+            ->whereNotNull('count');
+
+        if ($fromTime) {
+            $query->where('count_time', '>=', $fromTime);
+        }
+
+        if ($toTime) {
+            $query->where('count_time', '<=', $toTime);
+        }
+
+        return $query->count('count_time');
+    }
+
+    public function getJobFetchRange(
+        Carbon $fromTime = null,
+        Carbon $toTime = null,
+        int $maxPoints = 200
+    ) {
+        if ($fromTime == null) {
+            $fromTime = $this->getJobFetchMinTime();
+        }
+
+        if ($toTime == null) {
+            $toTime = $this->getJobFetchMaxTime();
+        }
+
+        $count = $this->getJobFetchCount();
+
+        if ($count > $maxPoints) {
+            // Too many points, so we need to group by date ranges
+            // to summarise.
+
+            // FIXME: format the date to an appropriate range to get the
+            // count number into a sensible range. This just limits to hourly
+            // at this time.
+
+            // NOTE: this will only work for MySQL. Performing the grouping
+            // *after* fetching from the database would work for other
+            // database engines and allow for other groupings, e.g. into two
+            // hour groups, but will need more memory.
+
+            return $this
+                ->fetchJobs()
+                ->whereNotNull('count')
+                ->where('count_time', '>=', $fromTime)
+                ->where('count_time', '<=', $toTime)
+                ->select([
+                    DB::raw('date_format(count_time, "%Y-%m-%d %H:00:00") as count_time_group'),
+                    DB::raw('max(count) as count'),
+                ])
+                ->groupBy('count_time_group')
+                ->orderBy('count_time_group')
+                ->get()
+                ->each(function ($item) {
+                    $item->count_time = $item->count_time_group;
+                });
+        }
+
+        return $this
+            ->fetchJobs()
+            ->whereNotNull('count')
+            ->where('count_time', '>=', $fromTime)
+            ->where('count_time', '<=', $toTime)
+            ->select(['count_time', 'count'])
+            ->orderBy('count_time')
+            ->get();
     }
 }

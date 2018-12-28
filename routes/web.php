@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+//ReportController
+
+Route::get('/overview/{petitionNumber?}', 'ReportController@simpleOverview')
+    ->name('overview');
