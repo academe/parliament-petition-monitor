@@ -106,6 +106,13 @@ class Petition extends Model
 
         $count = $this->getJobFetchCount();
 
+        if ($count === 0) {
+            // No results have been captureed yet, or there are
+            // none for the sepcified data range.
+
+            return;
+        }
+
         if ($count > $maxPoints) {
             // Too many points, so we need to group by date ranges
             // to summarise.

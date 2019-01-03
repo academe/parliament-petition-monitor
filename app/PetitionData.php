@@ -58,6 +58,16 @@ class PetitionData
         return $this->getDataItem('data.attributes.state');
     }
 
+    public function getJsonUrl() : string
+    {
+        return $this->getDataItem('links.self');
+    }
+
+    public function getHtmlUrl() : string
+    {
+        return str_replace('.json', '', $this->getJsonUrl());
+    }
+
     /** 
      * The overall declared count.
      * This often differs from the counts obtained by summing the

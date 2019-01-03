@@ -32,18 +32,22 @@ class ReportController extends Controller
 
             $allOverviewCounts = $petition->getJobFetchRange();
 
-            $chart = new SimpleOverview;
+            if ($allOverviewCounts !== null) {
+                $chart = new SimpleOverview;
 
-            $chart->labels($allOverviewCounts->pluck(['count_time']));
-            $chart->dataset(
-                $petitionData->getAction(),
-                'line',
-                $allOverviewCounts->pluck(['count'])
-            );
-            $chart->options(['scales' => ['yAxes' => ['ticks' => ['beginAtZero' => false]]]]);
+                $chart->labels($allOverviewCounts->pluck(['count_time']));
+                $chart->dataset(
+                    $petitionData->getAction(),
+                    'line',
+                    $allOverviewCounts->pluck(['count'])
+                );
+                $chart->options(['scales' => ['yAxes' => ['ticks' => ['beginAtZero' => false]]]]);
+            }
         }
 
         $petitionList = Petition::get();
+
+        //dump($petition->toArray());
 
         return view('charts.simple-overview', [
             'chart' => $chart ?? null,
