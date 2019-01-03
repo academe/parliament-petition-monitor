@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Chart with VueJS</title>
+        <title>UK Parliment Petitions Monitor</title>
     </head>
     <body>
         <div>
@@ -29,6 +29,36 @@
             </script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
             {!! $chart->script() !!}
+        @endif
+
+        @if(!empty($petition))
+            <table>
+                <tr>
+                    <th scope="row">Action</td>
+                    <td>{{ $petition->getPetitionData()->getAction() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Total Votes</td>
+                    <td>{{ $petition->getPetitionData()->getCount() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">State</td>
+                    <td>{{ $petition->getPetitionData()->getState() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Background</td>
+                    <td>{{ $petition->getPetitionData()->getBackground() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Additional Details</td>
+                    <td>{{ $petition->getPetitionData()->getAdditionalDetails() }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Monitor Period</td>
+                    <td>{{ $petition->getScheduleName() }}</td>
+                </tr>
+            </table>
+            <?php //dump($petition->toArray()); ?>
         @endif
     </body>
 </html>

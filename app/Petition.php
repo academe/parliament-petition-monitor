@@ -94,7 +94,7 @@ class Petition extends Model
     public function getJobFetchRange(
         Carbon $fromTime = null,
         Carbon $toTime = null,
-        int $maxPoints = 200
+        int $maxPoints = 350
     ) {
         if ($fromTime == null) {
             $fromTime = $this->getJobFetchMinTime();
@@ -119,13 +119,41 @@ class Petition extends Model
             // database engines and allow for other groupings, e.g. into two
             // hour groups, but will need more memory.
 
+            switch ($this->schedule) {
+                case static::SCHEDULE_HOUR:
+                    $samplesPerHour = 1;
+                    break;
+                case static::SCHEDULE_HALF_HOUR:
+                    $samplesPerHour = 2;
+                    break;
+                case static::SCHEDULE_QUARTER_HOUR:
+                    $samplesPerHour = 4;
+                    break;
+                case static::SCHEDULE_TEN_MINUTES:
+                    $samplesPerHour = 6;
+                    break;
+                case static::SCHEDULE_NONE:
+                case static::SCHEDULE_DAY:
+                default:
+                    $samplesPerHour = 1/24;
+                    break;
+            }
+
+            if ($count / $samplesPerHour <= $maxPoints) {
+                // Group by hour.
+                $groupPattern = '%Y-%m-%d %H:00:00';
+            } else {
+                // Group by day.
+                $groupPattern = '%Y-%m-%d 00:00:00';
+            }
+
             return $this
                 ->fetchJobs()
                 ->whereNotNull('count')
                 ->where('count_time', '>=', $fromTime)
                 ->where('count_time', '<=', $toTime)
                 ->select([
-                    DB::raw('date_format(count_time, "%Y-%m-%d %H:00:00") as count_time_group'),
+                    DB::raw('date_format(count_time, "'.$groupPattern.'") as count_time_group'),
                     DB::raw('max(count) as count'),
                 ])
                 ->groupBy('count_time_group')
@@ -144,5 +172,10 @@ class Petition extends Model
             ->select(['count_time', 'count'])
             ->orderBy('count_time')
             ->get();
+    }
+
+    public function getScheduleName()
+    {
+        return ucwords(str_replace('-', ' ', $this->schedule));
     }
 }

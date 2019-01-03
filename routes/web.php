@@ -11,9 +11,11 @@
 |
 */
 
-Route::get('/', function () {
+Route::redirect('/', '/overview');
+
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
 
 //ReportController
 

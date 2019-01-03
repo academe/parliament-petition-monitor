@@ -48,6 +48,7 @@ class ReportController extends Controller
         return view('charts.simple-overview', [
             'chart' => $chart ?? null,
             'petitionList' => $petitionList,
+            'petition' => $petition ?? null,
         ]);
 
     }

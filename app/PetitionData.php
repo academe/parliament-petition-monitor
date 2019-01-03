@@ -76,6 +76,16 @@ class PetitionData
         return $this->getDataItem('data.attributes.action');
     }
 
+    public function getBackground() : string
+    {
+        return $this->getDataItem('data.attributes.background');
+    }
+
+    public function getAdditionalDetails() : string
+    {
+        return $this->getDataItem('data.attributes.additional_details');
+    }
+
     /**
      * Is the petition still open?
      */
