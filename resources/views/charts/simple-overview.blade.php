@@ -43,7 +43,7 @@
                     </tr>
                     <tr>
                         <th scope="row">Total Votes</td>
-                        <td>{{ $petition->getPetitionData()->getCount() }}</td>
+                        <td>{{ $petition->fetchJobs()->latest()->first()->count }}</td>
                     </tr>
                     <tr>
                         <th scope="row">State</td>
@@ -62,10 +62,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row">Monitor Period</td>
-                        <td>{{ $petition->getScheduleName() }}</td>
-                    </tr>
-                    <tr>
                         <th scope="row">Petition Home Page</td>
                         <td><a href="{{ $petition->getPetitionData()->getHtmlUrl() }}" rel="external">
                             {{ $petition->getPetitionData()->getHtmlUrl() }}
@@ -77,8 +73,19 @@
                             {{ $petition->getPetitionData()->getJsonUrl() }}
                         </a></td>
                     </tr>
+                    <tr>
+                        <th scope="row">Monitor Period</td>
+                        <td>{{ $petition->getScheduleName() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Samples</td>
+                        <td>
+                            {{ $petition->fetchJobs()->count() }}
+                            since
+                            {{ $petition->fetchJobs()->oldest()->first()->created_at }}
+                        </td>
+                    </tr>
                 </table>
-                <?php //dump($petition->toArray()); ?>
             @endif
         </div>
 

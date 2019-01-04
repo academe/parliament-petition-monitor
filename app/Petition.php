@@ -35,6 +35,11 @@ class Petition extends Model
         return $this->hasMany(FetchJob::class);
     }
 
+    public function latestFetchJobs()
+    {
+        return $this->hasMany(FetchJob::class)->latest();
+    }
+
     /**
      * @returns PetitionData object from the stored metadata
      */
