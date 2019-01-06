@@ -33,6 +33,8 @@
                 </script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
                 {!! $chart->script() !!}
+            @elseif(!empty($petition))
+                <p class="alert alert-info">First sample will be gathered shortly.</p>
             @endif
 
             @if(!empty($petition))
@@ -43,7 +45,13 @@
                     </tr>
                     <tr>
                         <th scope="row">Total Votes</td>
-                        <td>{{ $petition->fetchJobs()->latest()->first()->count }}</td>
+                        <td>
+                            @if($petition->fetchJobs()->count())
+                                {{ $petition->fetchJobs()->latest()->first()->count }}
+                            @else
+                                No results yet
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th scope="row">State</td>
@@ -78,11 +86,15 @@
                         <td>{{ $petition->getScheduleName() }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Samples</td>
+                        <th scope="row">Sample Count</td>
                         <td>
-                            {{ $petition->fetchJobs()->count() }}
-                            since
-                            {{ $petition->fetchJobs()->oldest()->first()->created_at }}
+                            @if($petition->fetchJobs()->count())
+                                {{ $petition->fetchJobs()->count() }}
+                                since
+                                {{ $petition->fetchJobs()->oldest()->first()->created_at }}
+                            @else
+                                No results yet
+                            @endif
                         </td>
                     </tr>
                 </table>
