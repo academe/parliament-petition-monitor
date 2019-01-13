@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Charts\SimpleOverview;
 use App\Petition;
 use Carbon\Carbon;
+use Cache;
 
 class ReportController extends Controller
 {
@@ -19,27 +20,28 @@ class ReportController extends Controller
 
             $allOverviewCounts = $petition->getJobFetchRange();
 
+            $chartData = $petition->getChartData();
+
             if ($allOverviewCounts !== null) {
                 // Construct the chart.
                 // Couldn't be easier. Package here:
                 // https://github.com/ConsoleTVs/Charts
 
-                $chart = new SimpleOverview;
+                $chart1 = new SimpleOverview;
+                $chart1data = $chartData->get('chart1');
 
                 // The time is formatted without seconds and rounded to
                 // the nearest five minutes.
 
-                $chart->labels(
-                    $allOverviewCounts->pluck(['count_time_five_minute'])
+                $chart1->labels($chart1data->get('labels'));
+
+                $chart1->dataset(
+                    $chart1data->get('action'),
+                    $chart1data->get('type'),
+                    $chart1data->get('dataset')
                 );
 
-                $chart->dataset(
-                    $petitionData->getAction(),
-                    'line',
-                    $allOverviewCounts->pluck(['count'])
-                );
-
-                $chart->options([
+                $chart1->options([
                     'scales' => [
                         'yAxes' => [
                             'ticks' => ['beginAtZero' => false],
@@ -47,43 +49,15 @@ class ReportController extends Controller
                     ]
                 ]);
 
-                // Now calculate the derivative.
-
-                $previous = null;
-                $derivative = [];
-
-                $allOverviewCounts->each(function ($item) use (& $previous, & $derivative) {
-                    $fiveMinutes = Carbon::parse($item->count_time)->roundMinute(5);
-
-                    if ($previous === null) {
-                        $previous = $item;
-                        $previous->time = $fiveMinutes;
-                        return;
-                    }
-
-                    $hours = ($fiveMinutes->diffInMinutes($previous->time)) / 60;
-                    if ($hours == 0) {
-                        // Sometimes two times will be the same.
-                        // Skip that iteration to avoid a divide by zero.
-                        return;
-                    }
-                    $signatures = $item->count - $previous->count;
-                    $signaturesPerHour = round($signatures / $hours, 2);
-
-                    $derivative[$fiveMinutes->format('Y-m-d H:i')] = $signaturesPerHour;
-
-                    $previous = $item;
-                    $previous->time = $fiveMinutes;
-                });
-
                 $chart2 = new SimpleOverview;
+                $chart2data = $chartData->get('chart2');
 
-                $chart2->labels(array_keys($derivative));
+                $chart2->labels($chart2data->get('labels'));
 
                 $chart2->dataset(
-                    $petitionData->getAction(),
-                    'line',
-                    array_values($derivative)
+                    $chart2data->get('action'),
+                    $chart2data->get('type'),
+                    $chart2data->get('dataset')
                 );
             }
         }
@@ -91,7 +65,7 @@ class ReportController extends Controller
         $petitionList = Petition::get();
 
         return view('charts.simple-overview', [
-            'chart' => $chart ?? null,
+            'chart1' => $chart1 ?? null,
             'chart2' => $chart2 ?? null,
             'petitionList' => $petitionList,
             'petition' => $petition ?? null,

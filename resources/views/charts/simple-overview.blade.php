@@ -21,22 +21,22 @@
 
             <hr />
 
-            @if(!empty($chart))
+            @if(!empty($chart1))
 
                 <script src="https://unpkg.com/vue"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
 
                 <h2>Total Signatures</h2>
 
-                <div id="app">
-                    {!! $chart->container() !!}
+                <div id="app1">
+                    {!! $chart1->container() !!}
                 </div>
                 <script>
                     var app = new Vue({
-                        el: '#app',
+                        el: '#app1',
                     });
                 </script>
-                {!! $chart->script() !!}
+                {!! $chart1->script() !!}
 
                 <h2>Signatures per Hour</h2>
 

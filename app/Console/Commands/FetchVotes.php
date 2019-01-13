@@ -155,5 +155,9 @@ class FetchVotes extends Command
 
             $countrySignature->save();
         }
+
+        // Clear petition charts cache since we have new data.
+
+        $petition->flushCache();
     }
 }

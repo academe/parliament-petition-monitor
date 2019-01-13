@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Country;
 use App\Constituency;
 use Carbon\Carbon;
+use Cache;
 use DB;
 
 class Petition extends Model
@@ -19,6 +20,10 @@ class Petition extends Model
     const SCHEDULE_HALF_HOUR = 'half-hour';
     const SCHEDULE_QUARTER_HOUR = 'quarter-hour';
     const SCHEDULE_TEN_MINUTES = 'ten-minutes';
+
+    const MAX_POINTS = 1000;
+
+    const MAX_CACHE_MINUTES = 120;
 
     protected $guarded = [];
 
@@ -99,7 +104,7 @@ class Petition extends Model
     public function getJobFetchRange(
         Carbon $fromTime = null,
         Carbon $toTime = null,
-        int $maxPoints = 1000
+        int $maxPoints = self::MAX_POINTS
     ) {
         if ($fromTime == null) {
             $fromTime = $this->getJobFetchMinTime();
@@ -189,5 +194,95 @@ class Petition extends Model
     public function getScheduleName()
     {
         return ucwords(str_replace('-', ' ', $this->schedule));
+    }
+
+    public function getCacheKey()
+    {
+        return 'petition_' . $this->petition_number . '_' . self::MAX_POINTS;
+    }
+
+    /**
+     * TODO: include some date range options when the data starts getting
+     * a lot longer.
+     */
+    public function getChartData(bool $withCache = true)
+    {
+        $allOverviewCounts = $this->getJobFetchRange();
+
+        if ($allOverviewCounts === null) {
+            return;
+        }
+
+        $cacheKey = $this->getCacheKey();
+
+        if ($withCache && ($data = Cache::get($cacheKey, null)) !== null) {
+            return $data;
+        }
+
+        $petitionData = $this->getPetitionData();
+
+        $data = collect();
+
+        // Total signatures (chart1).
+
+        $data['chart1'] = collect([
+            'action' => $petitionData->getAction(),
+            'type' => 'line',
+            'labels' => $allOverviewCounts->pluck(['count_time_five_minute']),
+            'dataset' => $allOverviewCounts->pluck(['count']),
+        ]);
+
+        // Now calculate the derivative (chart2).
+
+        $previous = null;
+
+        $chart2data = collect([
+            'action' => $petitionData->getAction(),
+            'type' => 'line',
+            'labels' => collect(),
+            'dataset' => collect(),
+        ]);
+
+        $data->put('chart2', $chart2data);
+
+        $allOverviewCounts->each(function ($item) use (& $previous, & $chart2data) {
+            $fiveMinutes = Carbon::parse($item->count_time)->roundMinute(5);
+
+            if ($previous === null) {
+                $previous = $item;
+                $previous->time = $fiveMinutes;
+                return;
+            }
+
+            $hours = ($fiveMinutes->diffInMinutes($previous->time)) / 60;
+            if ($hours == 0) {
+                // Sometimes two times will be the same.
+                // Skip that iteration to avoid a divide by zero.
+
+                return;
+            }
+            $signatures = $item->count - $previous->count;
+            $signaturesPerHour = round($signatures / $hours, 2);
+
+            $chart2data->get('labels')->push($fiveMinutes->format('Y-m-d H:i'));
+            $chart2data->get('dataset')->push($signaturesPerHour);
+
+            $previous = $item;
+            $previous->time = $fiveMinutes;
+        });
+
+        if ($withCache) {
+            Cache::put($this->getCacheKey(), $data, static::MAX_CACHE_MINUTES);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Flush the cached data each time the petition is rescanned.
+     */
+    public function flushCache()
+    {
+        Cache::forget($this->getCacheKey());
     }
 }
