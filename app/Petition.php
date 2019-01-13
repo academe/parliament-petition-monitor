@@ -99,7 +99,7 @@ class Petition extends Model
     public function getJobFetchRange(
         Carbon $fromTime = null,
         Carbon $toTime = null,
-        int $maxPoints = 350
+        int $maxPoints = 1000
     ) {
         if ($fromTime == null) {
             $fromTime = $this->getJobFetchMinTime();

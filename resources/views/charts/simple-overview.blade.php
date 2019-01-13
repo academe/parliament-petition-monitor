@@ -22,17 +22,34 @@
             <hr />
 
             @if(!empty($chart))
+
+                <script src="https://unpkg.com/vue"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
+
+                <h2>Total Signatures</h2>
+
                 <div id="app">
                     {!! $chart->container() !!}
                 </div>
-                <script src="https://unpkg.com/vue"></script>
                 <script>
                     var app = new Vue({
                         el: '#app',
                     });
                 </script>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
                 {!! $chart->script() !!}
+
+                <h2>Signatures per Hour</h2>
+
+                <div id="app2">
+                    {!! $chart2->container() !!}
+                </div>
+                <script>
+                    var app2 = new Vue({
+                        el: '#app2',
+                    });
+                </script>
+                {!! $chart2->script() !!}
+
             @elseif(!empty($petition))
                 <p class="alert alert-info">First sample will be gathered shortly.</p>
             @endif
@@ -63,12 +80,14 @@
                             {!! Markdown::convertToHtml($petition->getPetitionData()->getBackground()) !!}
                         </td>
                     </tr>
+                    @if($petition->getPetitionData()->getAdditionalDetails())
                     <tr>
                         <th scope="row">Additional Details</td>
                         <td>
                             {!! Markdown::convertToHtml($petition->getPetitionData()->getAdditionalDetails()) !!}
                         </td>
                     </tr>
+                    @endif
                     <tr>
                         <th scope="row">Petition Home Page</td>
                         <td><a href="{{ $petition->getPetitionData()->getHtmlUrl() }}" rel="external">
@@ -91,7 +110,7 @@
                             @if($petition->fetchJobs()->count())
                                 {{ $petition->fetchJobs()->count() }}
                                 since
-                                {{ $petition->fetchJobs()->oldest()->first()->created_at }}
+                                {{ $petition->fetchJobs()->oldest()->first()->created_at->format('Y-m-d') }}
                             @else
                                 No results yet
                             @endif
