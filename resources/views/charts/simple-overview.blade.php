@@ -57,11 +57,11 @@
             @if(!empty($petition))
                 <table class="table">
                     <tr>
-                        <th scope="row">Action</td>
+                        <th scope="row">Action</th>
                         <td>{{ $petition->getPetitionData()->getAction() }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Total Votes</td>
+                        <th scope="row">Total Votes</th>
                         <td>
                             @if($petition->fetchJobs()->count())
                                 {{ $petition->fetchJobs()->latest()->first()->count }}
@@ -71,41 +71,41 @@
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row">State</td>
+                        <th scope="row">State</th>
                         <td>{{ $petition->getPetitionData()->getState() }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Background</td>
+                        <th scope="row">Background</th>
                         <td>
                             {!! Markdown::convertToHtml($petition->getPetitionData()->getBackground()) !!}
                         </td>
                     </tr>
                     @if($petition->getPetitionData()->getAdditionalDetails())
                     <tr>
-                        <th scope="row">Additional Details</td>
+                        <th scope="row">Additional Details</th>
                         <td>
                             {!! Markdown::convertToHtml($petition->getPetitionData()->getAdditionalDetails()) !!}
                         </td>
                     </tr>
                     @endif
                     <tr>
-                        <th scope="row">Petition Home Page</td>
+                        <th scope="row">Petition Home Page</th>
                         <td><a href="{{ $petition->getPetitionData()->getHtmlUrl() }}" rel="external">
                             {{ $petition->getPetitionData()->getHtmlUrl() }}
                         </a></td>
                     </tr>
                     <tr>
-                        <th scope="row">Source JSON Feed</td>
+                        <th scope="row">Source JSON Feed</th>
                         <td><a href="{{ $petition->getPetitionData()->getJsonUrl() }}" rel="external">
                             {{ $petition->getPetitionData()->getJsonUrl() }}
                         </a></td>
                     </tr>
                     <tr>
-                        <th scope="row">Monitor Period</td>
+                        <th scope="row">Monitor Period</th>
                         <td>{{ $petition->getScheduleName() }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Sample Count</td>
+                        <th scope="row">Sample Count</th>
                         <td>
                             @if($petition->fetchJobs()->count())
                                 {{ $petition->fetchJobs()->count() }}
