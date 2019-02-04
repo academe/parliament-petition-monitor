@@ -21,34 +21,38 @@
 
             <hr />
 
-            @if(!empty($chart1))
+            @if(!empty($chart1) || !empty($chart2))
 
                 <script src="https://unpkg.com/vue"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
 
-                <h2>Total Signatures</h2>
+                @if(!empty($chart1))
+                    <h2>Total Signatures</h2>
 
-                <div id="app1">
-                    {!! $chart1->container() !!}
-                </div>
-                <script>
-                    var app = new Vue({
-                        el: '#app1',
-                    });
-                </script>
-                {!! $chart1->script() !!}
+                    <div id="app1">
+                        {!! $chart1->container() !!}
+                    </div>
+                    <script>
+                        var app = new Vue({
+                            el: '#app1',
+                        });
+                    </script>
+                    {!! $chart1->script() !!}
+                @endif
 
-                <h2>Signatures per Hour</h2>
+                @if(!empty($chart2))
+                    <h2>Signatures per Hour</h2>
 
-                <div id="app2">
-                    {!! $chart2->container() !!}
-                </div>
-                <script>
-                    var app2 = new Vue({
-                        el: '#app2',
-                    });
-                </script>
-                {!! $chart2->script() !!}
+                    <div id="app2">
+                        {!! $chart2->container() !!}
+                    </div>
+                    <script>
+                        var app2 = new Vue({
+                            el: '#app2',
+                        });
+                    </script>
+                    {!! $chart2->script() !!}
+                @endif
 
             @elseif(!empty($petition))
                 <p class="alert alert-info">First sample will be gathered shortly.</p>

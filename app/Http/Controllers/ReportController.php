@@ -46,7 +46,9 @@ class ReportController extends Controller
                         'yAxes' => [
                             'ticks' => ['beginAtZero' => false],
                         ]
-                    ]
+                    ],
+                    'color' => ['#66aa66'],
+                    'backgroundColor' => ['#bbffbb'],
                 ]);
 
                 $chart2 = new SimpleOverview;
@@ -58,7 +60,11 @@ class ReportController extends Controller
                     $chart2data->get('action'),
                     $chart2data->get('type'),
                     $chart2data->get('dataset')
-                );
+                )->options([
+                    'color' => ['#aa6666'],
+                    'backgroundColor' => ['#ffbbbb'],
+                ]);
+
             }
         }
 
