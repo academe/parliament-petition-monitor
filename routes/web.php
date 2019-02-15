@@ -13,11 +13,9 @@
 
 Route::redirect('/', '/overview');
 
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
+// ReportController
 
-//ReportController
-
-Route::get('/overview/{petitionNumber?}', 'ReportController@simpleOverview')
-    ->name('overview');
+Route::middleware('throttle:30,1')->group(function () {
+    Route::get('/overview/{petitionNumber?}', 'ReportController@simpleOverview')
+        ->name('overview');
+});
