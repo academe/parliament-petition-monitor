@@ -11,11 +11,13 @@
 |
 */
 
-Route::redirect('/', '/overview');
-
-// ReportController
-
 Route::middleware('throttle:30,1')->group(function () {
+    // There is just the one page for now.
+
+    Route::redirect('/', '/overview');
+
+    // ReportController
+
     Route::get('/overview/{petitionNumber?}', 'ReportController@simpleOverview')
         ->name('overview');
 });

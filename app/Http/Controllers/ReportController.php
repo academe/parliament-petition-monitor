@@ -10,7 +10,7 @@ use Cache;
 
 class ReportController extends Controller
 {
-    public function simpleOverview(int $petitionNumber = null)
+    public function simpleOverview($petitionNumber = null)
     {
         if ($petitionNumber !== null) {
             $petition = Petition::where('petition_number', '=', $petitionNumber)
