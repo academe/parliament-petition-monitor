@@ -65,10 +65,12 @@
                         <td>{{ $petition->getPetitionData()->getAction() }}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Total Votes</th>
+                        <th scope="row">Total Signatures</th>
                         <td>
                             @if($petition->fetchJobs()->count())
-                                {{ $petition->fetchJobs()->latest()->first()->count }}
+                                {{ number_format($petition->fetchJobs()->latest()->first()->count) }}
+                                ({{ number_format($petition->fetchJobs()->latest()->first()->constituencySignatures()->sum('count')) }}
+                                for UK constituencies)
                             @else
                                 No results yet
                             @endif
