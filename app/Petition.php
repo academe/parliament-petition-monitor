@@ -207,16 +207,16 @@ class Petition extends Model
      */
     public function getChartData(bool $withCache = true)
     {
-        $allOverviewCounts = $this->getJobFetchRange();
-
-        if ($allOverviewCounts === null) {
-            return;
-        }
-
         $cacheKey = $this->getCacheKey();
 
         if ($withCache && ($data = Cache::get($cacheKey, null)) !== null) {
             return $data;
+        }
+
+        $allOverviewCounts = $this->getJobFetchRange();
+
+        if ($allOverviewCounts === null) {
+            return;
         }
 
         $petitionData = $this->getPetitionData();

@@ -39,7 +39,11 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', false),
+    'debug' => env('APP_DEBUG', false)
+        && in_array(
+            $_SERVER['REMOTE_ADDR'] ?? 'nowhere',
+            explode(',', env('DEBUG_IP_LIST', ''))
+        ),
 
     /*
     |--------------------------------------------------------------------------

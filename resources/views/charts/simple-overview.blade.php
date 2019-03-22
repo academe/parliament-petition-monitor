@@ -62,15 +62,16 @@
                 <table class="table">
                     <tr>
                         <th scope="row">Action</th>
-                        <td>{{ $petition->getPetitionData()->getAction() }}</td>
+                        <td>{{ $petitionData->getAction() }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Total Signatures</th>
                         <td>
-                            @if($petition->fetchJobs()->count())
-                                {{ number_format($petition->fetchJobs()->latest()->first()->count) }}
-                                ({{ number_format($petition->fetchJobs()->latest()->first()->constituencySignatures()->sum('count')) }}
-                                for UK constituencies)
+                            @if($totalCount > 0)
+                                {{ number_format($totalCount) }}
+                                ({{ number_format($constituencyCount) }}
+                                for UK constituencies; 
+                                {{ number_format(($constituencyCount / $totalCount) * 100) }}%)
                             @else
                                 No results yet
                             @endif
@@ -78,32 +79,32 @@
                     </tr>
                     <tr>
                         <th scope="row">State</th>
-                        <td>{{ $petition->getPetitionData()->getState() }}</td>
+                        <td>{{ $petitionData->getState() }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Background</th>
                         <td>
-                            {!! Markdown::convertToHtml($petition->getPetitionData()->getBackground()) !!}
+                            {!! Markdown::convertToHtml($petitionData->getBackground()) !!}
                         </td>
                     </tr>
-                    @if($petition->getPetitionData()->getAdditionalDetails())
+                    @if($petitionData->getAdditionalDetails())
                     <tr>
                         <th scope="row">Additional Details</th>
                         <td>
-                            {!! Markdown::convertToHtml($petition->getPetitionData()->getAdditionalDetails()) !!}
+                            {!! Markdown::convertToHtml($petitionData->getAdditionalDetails()) !!}
                         </td>
                     </tr>
                     @endif
                     <tr>
                         <th scope="row">Petition Home Page</th>
-                        <td><a href="{{ $petition->getPetitionData()->getHtmlUrl() }}" rel="external">
-                            {{ $petition->getPetitionData()->getHtmlUrl() }}
+                        <td><a href="{{ $petitionData->getHtmlUrl() }}" rel="external">
+                            {{ $petitionData->getHtmlUrl() }}
                         </a></td>
                     </tr>
                     <tr>
                         <th scope="row">Source JSON Feed</th>
-                        <td><a href="{{ $petition->getPetitionData()->getJsonUrl() }}" rel="external">
-                            {{ $petition->getPetitionData()->getJsonUrl() }}
+                        <td><a href="{{ $petitionData->getJsonUrl() }}" rel="external">
+                            {{ $petitionData->getJsonUrl() }}
                         </a></td>
                     </tr>
                     <tr>
@@ -113,8 +114,8 @@
                     <tr>
                         <th scope="row">Sample Count</th>
                         <td>
-                            @if($petition->fetchJobs()->count())
-                                {{ $petition->fetchJobs()->count() }}
+                            @if($sampleCount = $petition->fetchJobs()->count())
+                                {{ $sampleCount }}
                                 since
                                 {{ $petition->fetchJobs()->oldest()->first()->created_at->format('Y-m-d') }}
                             @else

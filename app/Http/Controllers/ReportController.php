@@ -18,11 +18,9 @@ class ReportController extends Controller
 
             $petitionData = $petition->getPetitionData();
 
-            $allOverviewCounts = $petition->getJobFetchRange();
-
             $chartData = $petition->getChartData();
 
-            if ($allOverviewCounts !== null) {
+            if ($chartData !== null) {
                 // Construct the chart.
                 // Couldn't be easier. Package here:
                 // https://github.com/ConsoleTVs/Charts
@@ -64,8 +62,22 @@ class ReportController extends Controller
                     'color' => ['#aa6666'],
                     'backgroundColor' => ['#ffbbbb'],
                 ]);
-
             }
+        } else {
+            $petition = null;
+        }
+
+        if (!empty($petition) && $petition->fetchJobs()->count()) {
+            $totalCount = $petition->fetchJobs()->latest()->first()->count;
+            $constituencyCount = $petition
+                ->fetchJobs()
+                ->latest()
+                ->first()
+                ->constituencySignatures()
+                ->sum('count');
+        } else {
+            $totalCount = 0;
+            $constituencyCount = 0;
         }
 
         $petitionList = Petition::get();
@@ -75,6 +87,9 @@ class ReportController extends Controller
             'chart2' => $chart2 ?? null,
             'petitionList' => $petitionList,
             'petition' => $petition ?? null,
+            'petitionData' => $petition ? $petition->getPetitionData() : null,
+            'totalCount' => $totalCount,
+            'constituencyCount' => $constituencyCount,
         ]);
     }
 }
