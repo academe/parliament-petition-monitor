@@ -29,15 +29,33 @@ class ReportController extends Controller
                 $chart1data = $chartData->get('chart1');
 
                 // The time is formatted without seconds and rounded to
-                // the nearest five minutes.
+                // the nearest five minutes, just to make it easier to read.
 
                 $chart1->labels($chart1data->get('labels'));
+
+                // Total counts dataset.
 
                 $chart1->dataset(
                     $chart1data->get('action'),
                     $chart1data->get('type'),
                     $chart1data->get('dataset')
-                );
+                )->options([
+                    'color' => ['#66aa33'],
+                    'backgroundColor' => 'rgba(255, 180, 20, 0.2)',
+                ]);
+
+                // Constituency counts dataset.
+
+                if ($chart1data->get('dataset2')) {
+                    $chart1->dataset(
+                        'UK Constituency Signature Count',
+                        'line',
+                        $chart1data->get('dataset2')
+                    )->options([
+                        'color' => ['#6633ff'],
+                        'backgroundColor' => 'rgba(255, 20, 132, 0.2)',
+                    ]);
+                }
 
                 $chart1->options([
                     'scales' => [
@@ -45,8 +63,8 @@ class ReportController extends Controller
                             'ticks' => ['beginAtZero' => false],
                         ]
                     ],
-                    'color' => ['#66aa66'],
-                    'backgroundColor' => ['#bbffbb'],
+                    //'color' => ['#66aa66'],
+                    //'backgroundColor' => ['#bbffbb'],
                 ]);
 
                 $chart2 = new SimpleOverview;
@@ -59,8 +77,8 @@ class ReportController extends Controller
                     $chart2data->get('type'),
                     $chart2data->get('dataset')
                 )->options([
-                    'color' => ['#aa6666'],
-                    'backgroundColor' => ['#ffbbbb'],
+                    'color' => '#aa6666',
+                    'backgroundColor' => '#ffbbbb',
                 ]);
             }
         } else {
@@ -86,7 +104,7 @@ class ReportController extends Controller
             'chart1' => $chart1 ?? null,
             'chart2' => $chart2 ?? null,
             'petitionList' => $petitionList,
-            'petition' => $petition ?? null,
+            'petition' => $petition,
             'petitionData' => $petition ? $petition->getPetitionData() : null,
             'totalCount' => $totalCount,
             'constituencyCount' => $constituencyCount,

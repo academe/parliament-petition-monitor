@@ -101,6 +101,9 @@ class Petition extends Model
         return $query->count('count_time');
     }
 
+    /**
+     * @return collect|null Collection of App\FetchJob
+     */
     public function getJobFetchRange(
         Carbon $fromTime = null,
         Carbon $toTime = null,
@@ -166,14 +169,16 @@ class Petition extends Model
 
             return $this
                 ->fetchJobs()
+                //->with('constituencySignatures')
                 ->whereNotNull('count')
                 ->where('count_time', '>=', $fromTime)
                 ->where('count_time', '<=', $toTime)
                 ->select([
                     DB::raw('date_format(count_time, "'.$groupPattern.'") as count_time_group'),
                     DB::raw('max(count) as count'),
+                    DB::raw('max(id) as id'),
                 ])
-                ->groupBy('count_time_group')
+                ->groupBy(['count_time_group'])
                 ->orderBy('count_time_group')
                 ->get()
                 ->each(function ($item) {
@@ -186,7 +191,7 @@ class Petition extends Model
             ->whereNotNull('count')
             ->where('count_time', '>=', $fromTime)
             ->where('count_time', '<=', $toTime)
-            ->select(['count_time', 'count'])
+            ->select(['count_time', 'count', 'id'])
             ->orderBy('count_time')
             ->get();
     }
@@ -230,6 +235,9 @@ class Petition extends Model
             'type' => 'line',
             'labels' => $allOverviewCounts->pluck(['count_time_five_minute']),
             'dataset' => $allOverviewCounts->pluck(['count']),
+            'dataset2' => $allOverviewCounts->map(function ($item) {
+                return $item->constituencySignatures()->sum('count');
+            }),
         ]);
 
         // Now calculate the derivative (chart2).
