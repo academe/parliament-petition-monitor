@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container-fluid" role="main">
             <h1>{{ config('app.name') }}</h1>
 
             <div>
@@ -128,6 +128,18 @@
 
             <a href="https://github.com/academe/parliament-petition-monitor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
         </div>
+
+        <footer class="footer">
+            <div class="container-fluid" class="text-muted">
+                <hr />
+                <ul class="list-unstyled">
+                    <li><a href="https://petition.parliament.uk/">
+                        Petition data © Houses of Parliament.
+                    </a></li>
+                    <li>No personal data is tracked when visting this site.</li>
+                </ul>
+            </div>
+        </footer>
 
         {{--
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
