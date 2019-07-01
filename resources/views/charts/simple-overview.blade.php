@@ -27,7 +27,10 @@
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
 
                 @if(!empty($chart1))
-                    <h2>Total Signatures</h2>
+                    <h2>
+                        Total Signatures
+                        <small class="text-muted">({{ $petition->getPetitionData()->getAction() }})</small>
+                    </h2>
 
                     <div id="app1">
                         {!! $chart1->container() !!}
@@ -41,7 +44,10 @@
                 @endif
 
                 @if(!empty($chart2))
-                    <h2>Signatures per Hour</h2>
+                    <h2>
+                        Signatures per Hour
+                        <small class="text-muted">({{ $petition->getPetitionData()->getAction() }})</small>
+                    </h2>
 
                     <div id="app2">
                         {!! $chart2->container() !!}

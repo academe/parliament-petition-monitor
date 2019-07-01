@@ -36,7 +36,8 @@ class ReportController extends Controller
                 // Total counts dataset.
 
                 $chart1->dataset(
-                    $chart1data->get('action'),
+                    //$chart1data->get('action'),
+                    'Total Signature Count',
                     $chart1data->get('type'),
                     $chart1data->get('dataset')
                 )->options([
