@@ -78,7 +78,7 @@ class CreatePetition extends Command
 
             if (! $update) {
                 $this->error(sprintf(
-                    'Petition %d already exists; use the --update flag t0 update it',
+                    'Petition %d already exists; use the --update flag to update it',
                     $petitionNumber
                 ));
                 return false;
