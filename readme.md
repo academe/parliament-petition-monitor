@@ -1,9 +1,9 @@
 ## Parliament Petition Monitor
 
-More documenation to come over the next few days.
+More documentation to come over the next few days.
 
-This is a laravel 5.7 application.
-It's purpose is to recard the counts of votes on a UK Parliament
+This is a Laravel 5.7 application.
+Its purpose is to record the counts of votes on a UK Parliament
 open petition at regular intervals to allow trends to be analysed.
 
 Current open petitions can be found here:
@@ -23,10 +23,10 @@ This list will likely grow:
 * [ ] Document commands.
 * [x] Set schedule in data.
 * [ ] Support enable/disable flag.
-* [ ] Disable a schedule when a peition closes.
+* [ ] Disable a schedule when a petition closes.
 * [ ] Front-end reporting and data export.
 * [ ] Installation instructions.
-* [ ] Automatically update peitition metadata on any substantive change (e.g. milestones).
+* [ ] Automatically update petition metadata on any substantive change (e.g. milestones).
 * [ ] With lots of jobs scheduled, it may be worth running them from a queue
       so jobs could be run in parallel.
 
