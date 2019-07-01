@@ -21,7 +21,7 @@ class FetchSchedule extends Command
      *
      * @var string
      */
-    protected $description = 'Run all petition job fetches taht meet a names schedule';
+    protected $description = 'Run all petition job fetches that meet a named schedule';
 
     /**
      * Create a new command instance.
